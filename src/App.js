@@ -12,13 +12,20 @@ const app = new Clarifai.App ({
 class App extends React.Component {
   state = {
     input: '',
-    imageUrl: ''
+    imageUrl: '',
+    celebName: {}
   };
 
 
   displayData = data => {
     const name = data.outputs[0].data.regions[0].data.concepts[0].name;
-    console.log(name);
+    return { name };
+  }
+
+  displayCelebName = celebName => {
+    this.setState({
+      celebName
+    })
   }
 
   onInputChange = e => {
@@ -36,20 +43,24 @@ class App extends React.Component {
 
     app.models
     .predict("e466caa0619f444ab97497640cefc4dc", this.state.input)
-    .then(response => this.displayData(response))
+    .then(response => this.displayCelebName(this.displayData(response)))
     .catch(err => console.log(err));
-
 
   };
 
   render() {
     return (
       <div className="App">
+      <div className="container">
           <SearchBar
           onFormSubmit={this.onFormSubmit}
           onInputChange={this.onInputChange} />
 
-          <ImageDisplay imageUrl = {this.state.imageUrl} />
+          <ImageDisplay
+           celebName = {this.state.celebName} 
+           imageUrl = {this.state.imageUrl} 
+           />
+      </div>
       </div>
     );
   }
